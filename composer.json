@@ -1,6 +1,6 @@
 {
-    "name": "LGA/prototype",
-    "description": "Simple RESTful API for contacts management",
+    "name": "lga37/modelo",
+    "description": "Modelo para API com Slim",
     "license": "MIT",
     "authors": [
         {
