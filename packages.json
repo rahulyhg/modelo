@@ -1,0 +1,15 @@
+{
+    "packages": {
+    	"name": "lga37/modelo",
+    	"version": "1.0.0",
+		"dist": {
+	        "url": "https://github.com/eminetto/lga37/modelo/master",
+	        "type": "zip"
+		},
+		"source": {
+            "url": "https://github.com/lga37/modelo",
+            "type": "git",
+            "reference": ""
+        }
+    }
+}

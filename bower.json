@@ -1,0 +1,14 @@
+{
+  "name": "app-modelo",
+  "version": "0.0.1",
+
+  "dependencies": {
+    "bootstrap": "*",
+    "bootstrap-table": "*",
+    "jquery": "*",
+    "fuelux": "*"
+  },
+  
+  "directory": "public/bower_components",
+  "private": true
+}
