@@ -12,13 +12,9 @@
         "php": ">=5.4",
         "slim/slim": "*",
         "swiftmailer/swiftmailer": "*",
-        "twig/twig":"*",
         "slim/extras": "*",
         "slim/middleware": "*",
-        "monolog/monolog": "*",
-        "j4mie/paris": "*",
-        "flynsarmy/slim-monolog": "*",
-		"facebook/php-sdk-v4":"4.0.*"        
+        "j4mie/paris": "*"
 
     },
     "archive": {
