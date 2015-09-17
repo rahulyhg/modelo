@@ -1,10 +1,10 @@
 
-
 var $table = $('#table'),
 $table2 = $('#table2'),
 $remove = $('#remove'),
 $add = $("#add"),
 selections = [];
+
 
 $(function () {
 
@@ -41,6 +41,9 @@ $(function () {
                     title: 'Item ID',
                     field: 'id',
                     align: 'center',
+                    formatter:function(){
+                        //return $(this).checkbox();
+                    },
                     valign: 'middle',
                     sortable: true,
                     footerFormatter: totalTextFormatter
@@ -54,7 +57,7 @@ $(function () {
                     align: 'center'
                 },
                 {
-                    field: 'categ.nome',
+                    field: 'cliente.nome',
                     title: 'pai',
                     sortable: true,
                     footerFormatter: totalNameFormatter,
@@ -73,8 +76,74 @@ $(function () {
                     title: 'e-mail',
                     sortable: true,
                     editable: {
-                        type: 'text',
-                        title: 'item-email',
+                        type: 'select',
+                        value: 2,    
+                        source: [
+                            {value: 1, text: 'Active'},
+                            {value: 2, text: 'Blocked'},
+                            {value: 3, text: 'Deleted'},
+                        ],                        
+                        mode: 'popup',
+                        title: 'blablaaa',
+                            var id = data[index]['id'];
+                            var type = 'PATCH';
+                            var url = "api/v1/contacts/"+id+"/email";
+                        highlight: '#FFFF80',
+                        pk:'{id:544}',
+                        error: function(response, newValue) {
+                            if(response.status === 500) {
+                                return 'Service unavailable. Please try later.';
+                            } else {
+                                return response.responseText;
+                            }
+                        },
+                        url: function(editParams) {
+                            var newDescription = editParams.value;
+
+                            var deferredObj = new $.Deferred();
+
+                            function save(callback) {
+                                alert('saved, yo.');
+                                setTimeout(callback, 1000);
+                            }
+
+                            save(function() {
+                                alert('resolved, yo.');
+                                deferredObj.resolve();
+                            });
+
+                            return deferredObj.promise();
+                        },
+
+
+                        url: function(params) {
+                            var d = new $.Deferred;
+                            if(params.value === 'abc') {
+                                return d.reject('error message'); 
+                                //returning error via deferred object
+                            } else {
+                                //async saving data in js model
+
+                                if(res.result==='error'){
+                                    alert(res.contact[0].email);
+                                    return false;
+                                    //return res.contact[0].email;
+                                }
+                                if(res.result==='OK'){
+                                    return '';
+                                }
+
+
+                                someModel.asyncSaveMethod({
+                                   //..., 
+                                   success: function(){
+                                      d.resolve();
+                                   }
+                                }); 
+                                return d.promise();
+                            }
+                        },
+
                         validate: function (value) {
                             //console.log('value:'+value);
                             value = $.trim(value);
@@ -87,28 +156,6 @@ $(function () {
                             for(var i in data[index]){
                                 console.log('---'+i +'-'+ data[index][i]);
                             }                                    
-                            var id = data[index]['id'];
-                            var type = 'PATCH';
-                            var url = "api/v1/contacts/"+id+"/email";
-                            var o = new Object();
-                            o.email = value;
-                            var data = JSON.stringify(o); //row=campo
-                            $.ajax({
-                                url : url,
-                                type: type,
-                                data: data
-                            }).done(function(res){
-                                if(res.result==='error'){
-                                    alert(res.contact[0].email);
-                                    return false;
-                                    //return res.contact[0].email;
-                                }
-                                if(res.result==='OK'){
-                                    return '';
-                                }
-                            }).error(function(){
-                                alert('erro');
-                            });
                             return '';
                         }
                     },
@@ -116,7 +163,7 @@ $(function () {
                     align: 'center'
                 },
                 {
-                    field: 'val',
+                    field: 'total',
                     title: 'Item Price',
                     sortable: true,
                     align: 'center',
@@ -373,48 +420,6 @@ function getIdSelections() {
     });
 }
 
-JSON.flatten = function(data) {
-    var result = {};
-    function recurse (cur, prop) {
-        if (Object(cur) !== cur) {
-            result[prop] = cur;
-        } else if (Array.isArray(cur)) {
-             for(var i=0, l=cur.length; i<l; i++)
-                 recurse(cur[i], prop ? prop+"."+i : ""+i);
-            if (l == 0)
-                result[prop] = [];
-        } else {
-            var isEmpty = true;
-            for (var p in cur) {
-                isEmpty = false;
-                recurse(cur[p], prop ? prop+"."+p : p);
-            }
-            if (isEmpty)
-                result[prop] = {};
-        }
-    }
-    recurse(data, "");
-    return result;
-}
-
-function responseHandler(res) {
-
-    var flatArray = [];
-    console.log(res);
-    $.each(res, function(i, val) { 
-        if(val){
-            flatArray.push(JSON.flatten(val));
-        }
-    });
-    return flatArray;
-
-/*
-    $.each(res.rows, function (i, row) {
-        row.state = $.inArray(row.id, selections) !== -1;
-    });
-    return res;
-*/
-}
 
 function detailFormatter(index, row) {
     var html = [];

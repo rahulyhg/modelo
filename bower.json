@@ -6,7 +6,8 @@
     "bootstrap": "*",
     "bootstrap-table": "*",
     "jquery": "*",
-    "fuelux": "*"
+    "fuelux": "*",
+    "x-editable":"*"
   },
   
   "directory": "public/bower_components",

@@ -1,12 +1,5 @@
-/**
- * @author zhixin wen <wenzhixin2010@gmail.com>
- * extensions: https://github.com/vitalets/x-editable
- */
-
 !function ($) {
-
     'use strict';
-
     $.extend($.fn.bootstrapTable.defaults, {
         editable: true,
         onEditableInit: function () {
@@ -43,10 +36,13 @@
             column.formatter = function (value, row, index) {
                 var result = _formatter ? _formatter(value, row, index) : value;
 
-                return ['<a href="javascript:void(0)"',
+                return [
+                    '<a href="javascript:void(0)"',
                     ' data-name="' + column.field + '"',
                     ' data-pk="' + row[that.options.idField] + '"',
                     ' data-value="' + result + '"',
+                    
+                    ' data-title="entre valor x"',
                     '>' + '</a>'
                 ].join('');
             };
@@ -66,8 +62,10 @@
                 return;
             }
 
-            that.$body.find('a[data-name="' + column.field + '"]').editable(column.editable)
-                .off('save').on('save', function (e, params) {
+            that.$body.find('a[data-name="' + column.field + '"]')
+                .editable(column.editable)
+                .off('save')
+                .on('save', function (e, params) {
                     var data = that.getData(),
                         index = $(this).parents('tr[data-index]').data('index'),
                         row = data[index],
@@ -79,5 +77,4 @@
         });
         this.trigger('editable-init');
     };
-
 }(jQuery);

@@ -3,11 +3,14 @@ require_once dirname(__FILE__) . '/vendor/autoload.php';
 use Slim\Slim;
 use API\Application;
 use API\Middleware\TokenOverBasicAuth;
+use API\Middleware\SwiftMailer;
 use Flynsarmy\SlimMonolog\Log\MonologWriter;
 // Init application mode
+
 if (empty($_ENV['SLIM_MODE'])) {
-    $_ENV['SLIM_MODE'] = (getenv('SLIM_MODE'))? getenv('SLIM_MODE') : 'development';
+    $_ENV['SLIM_MODE'] = (getenv('SLIM_MODE'))? getenv('SLIM_MODE') : 'production';
 }
+
 // Init and load configuration
 $config = array();
 $configFile = dirname(__FILE__) . '/share/config/'. $_ENV['SLIM_MODE'] . '.php';
@@ -18,29 +21,25 @@ if (is_readable($configFile)) {
 }
 // Create Application
 
-$app = new Application($config['app']);
+
+$logger = new \Flynsarmy\SlimMonolog\Log\MonologWriter(array(
+    'handlers' => array(
+        new \Monolog\Handler\StreamHandler('../logs/'.date('Y-m-d').'.log'),
+    ),
+));
+$app = new \Slim\Slim(array(
+    'log.writer' => $logger,
+    'mode' => 'production',
+));
 
 
-#$view = $app->view();
-#$view->setTemplatesDirectory('assets/templates');
-####################################################################
-####################################################################
-
-
-#$app = new \Slim\Slim(array(
-#    'view' => new \Slim\Extras\Views\Twig(),
-#    'templates.path' => 'assets/templates/'
-#));
-
-####################################################################
-####################################################################
 
 // Only invoked if mode is "production"
 $app->configureMode('production', function () use ($app) {
     $app->config(array(
         'log.enable' => true,
         'log.level' => \Slim\Log::WARN,
-        'debug' => true
+        'debug' => false,
     ));
 });
 // Only invoked if mode is "development"
@@ -48,12 +47,13 @@ $app->configureMode('development', function () use ($app) {
     $app->config(array(
         'log.enable' => true,
         'log.level' => \Slim\Log::DEBUG,
-        'debug' => true
+        'debug' => true,
     ));
 });
 // Get log writer
 $log = $app->getLog();
-// Init database
+
+
 #echo "<pre>";
 #print_r($config);
 
@@ -65,11 +65,19 @@ try {
             \ORM::configure('password', $config['db']['password']);
         }
     }
+    
+    \ORM::configure('logging',true);
+    \ORM::configure('logger', function($log_string, $query_time) use($log){
+        $log->debug($log_string .'-'. $query_time);
+    });
+
     \ORM::configure('error_mode', \PDO::ERRMODE_WARNING);
 } catch (\PDOException $e) {
     $log->error($e->getMessage());
 }
 
+$app = new Application($config['app']);
+#$app->validaEmail(['email'=>'ffjff@jhjhg']);
 
 // Cache Middleware (inner)
 #$app->add(new API\Middleware\Cache('/api/v1'));

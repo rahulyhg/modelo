@@ -1824,7 +1824,7 @@
                     return $cached_result;
                 }
             }
-
+            #echo $query;
             self::_execute($query, $this->_values, $this->_connection_name);
             $statement = self::get_last_statement();
 
@@ -2069,6 +2069,7 @@
             }
             $query[] = join(", ", $field_list);
             $this->_add_id_column_conditions($query);
+            
             return join(" ", $query);
         }
 

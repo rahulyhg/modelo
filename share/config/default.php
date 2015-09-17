@@ -1,7 +1,5 @@
 <?php
-/**
- * Common configuration
- */
+
 #create user 'web'@'localhost' identified by '123';
 #grant select,insert,update,delete on loja.* to 'web'@'localhost';
 
@@ -20,13 +18,12 @@ $config['db'] = array(
 $config['db']['username'] = "web";
 $config['db']['password'] = "123";
 
-
-$config['db']['dsn'] = sprintf(
-    '%s:%s;%s',
+$config['db']['dsn'] = sprintf('%s:%s;%s',
     $config['db']['driver'],
     $config['db']['dbpath'],
     $config['db']['dbname']
 );
+
 $config['app']['mode'] = $_ENV['SLIM_MODE'];
 // Cache TTL in seconds
 $config['app']['cache.ttl'] = 60;
@@ -40,6 +37,3 @@ $config['app']['log.writer'] = new \Flynsarmy\SlimMonolog\Log\MonologWriter(arra
         ),
     ),
 ));
-
-#$config['app']['templates.path'] = 'assets/templates';
-#$config['app']['view'] = new \Slim\Extras\Views\Twig();

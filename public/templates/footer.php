@@ -29,12 +29,13 @@
 
 </body>
 
-<script type="text/javascript" src="../bower_components/jquery/dist/jquery.min.js"></script>
-<script type="text/javascript" src="../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-<script src="https://maps.googleapis.com/maps/api/js?sensor=false"></script> 
+<script type="text/javascript" src="../../../bower_components/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript" src="../../../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script> 
+<script type="text/javascript" src="../../../bower_components/bootstrap-table/dist/bootstrap-table.js"></script>
 
-<script src="assets/js/formvalidation/dist/js/formValidation.min.js"></script>
-<script src="assets/js/formvalidation/dist/js/framework/bootstrap.min.js"></script>
-<script type="text/javascript" src="assets/js/script.js"></script>
+<script type="text/javascript" src="../../assets/js/formvalidation/dist/js/formValidation.min.js"></script>
+<script type="text/javascript" src="../../assets/js/formvalidation/dist/js/framework/bootstrap.min.js"></script>
+<script type="text/javascript" src="../../assets/js/script.js"></script>
 
 </html>

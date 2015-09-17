@@ -1,9 +1,3 @@
-/**
- * @author zhixin wen <wenzhixin2010@gmail.com>
- * version: 1.8.1
- * https://github.com/wenzhixin/bootstrap-table/
- */
-
 !function ($) {
     'use strict';
 
@@ -156,12 +150,12 @@
     // ======================
 
     var BootstrapTable = function (el, options) {
+        //alert('antes init');
         this.options = options;
         this.$el = $(el);
         this.$el_ = this.$el.clone();
         this.timeoutId_ = 0;
         this.timeoutFooter_ = 0;
-
         this.init();
     };
 
@@ -175,6 +169,7 @@
         columns: [],
         data: [],
         method: 'get',
+        //url: 'localhost/modelo/public/api/v1/contacts',
         url: undefined,
         ajax: undefined,
         cache: true,
@@ -314,6 +309,10 @@
         onExpandRow: function (index, row, $detail) {
             return false;
         },
+
+
+
+
         onCollapseRow: function (index, row) {
             return false;
         }
@@ -406,10 +405,18 @@
         'post-body.bs.table': 'onPostBody',
         'post-header.bs.table': 'onPostHeader',
         'expand-row.bs.table': 'onExpandRow',
+        
+
+        //'editable-save.bs.table': 'onEditableSave',
+
+
         'collapse-row.bs.table': 'onCollapseRow'
+
+
     };
 
     BootstrapTable.prototype.init = function () {
+        //alert('init de fato');
         this.initContainer();
         this.initTable();
         this.initHeader();
@@ -797,12 +804,15 @@
             this.options.icons = calculateObjectValue(null, this.options.icons);
         }
 
+        html.push('<button id="add" class="btn btn-success">Add</button>');
+
         if (this.options.showPaginationSwitch) {
             html.push(sprintf('<button class="btn btn-default" type="button" name="paginationSwitch" title="%s">',
                 this.options.formatPaginationSwitch()),
                 sprintf('<i class="%s %s"></i>', this.options.iconsPrefix, this.options.icons.paginationSwitchDown),
                 '</button>');
         }
+
 
         if (this.options.showRefresh) {
             html.push(sprintf('<button class="btn btn-default' + (this.options.iconSize === undefined ? '' : ' btn-' + this.options.iconSize) + '" type="button" name="refresh" title="%s">',
@@ -845,8 +855,7 @@
                     switchableCount++;
                 }
             });
-            html.push('</ul>',
-                '</div>');
+            html.push('</ul>','</div>');
         }
 
         html.push('</div>');
@@ -968,8 +977,7 @@
 
                     var index = $.inArray(key, that.header.fields);
                     if (index !== -1 && that.header.searchables[index] &&
-                        (typeof value === 'string' ||
-                            typeof value === 'number') &&
+                        (typeof value === 'string' || typeof value === 'number') &&
                         (value + '').toLowerCase().indexOf(s) !== -1) {
                         return true;
                     }
@@ -997,6 +1005,7 @@
             $number,
             data = this.getData();
 
+        //alert(data.length);    
         if (this.options.sidePagination !== 'server') {
             this.options.totalRows = data.length;
         }
@@ -1506,11 +1515,11 @@
     };
 
     BootstrapTable.prototype.initServer = function (silent, query) {
+        //alert(query);
         var that = this,
             data = {},
             params = {
-                pageSize: this.options.pageSize === this.options.formatAllRows() ?
-                    this.options.totalRows : this.options.pageSize,
+                pageSize: this.options.pageSize === this.options.formatAllRows() ? this.options.totalRows : this.options.pageSize,
                 pageNumber: this.options.pageNumber,
                 searchText: this.searchText,
                 sortName: this.options.sortName,
@@ -1519,9 +1528,10 @@
             request;
 
         if (!this.options.url && !this.options.ajax) {
+            //alert('ta sem url');
             return;
         }
-
+        //alert(this.options.url);
         if (this.options.queryParamsType === 'limit') {
             params = {
                 search: params.searchText,
@@ -1529,10 +1539,8 @@
                 order: params.sortOrder
             };
             if (this.options.pagination) {
-                params.limit = this.options.pageSize === this.options.formatAllRows() ?
-                    this.options.totalRows : this.options.pageSize;
-                params.offset = this.options.pageSize === this.options.formatAllRows() ?
-                    0 : this.options.pageSize * (this.options.pageNumber - 1);
+                params.limit = this.options.pageSize === this.options.formatAllRows() ? this.options.totalRows : this.options.pageSize;
+                params.offset = this.options.pageSize === this.options.formatAllRows() ? 0 : this.options.pageSize * (this.options.pageNumber - 1);
             }
         }
 
@@ -1552,24 +1560,37 @@
         if (!silent) {
             this.$tableLoading.show();
         }
-        request = $.extend({}, calculateObjectValue(null, this.options.ajaxOptions), {
+        //alert(this.options.dataType);
+        request = $.extend({}, 
+                            calculateObjectValue(null, this.options.ajaxOptions), {
             type: this.options.method,
             url: this.options.url,
-            data: this.options.contentType === 'application/json' && this.options.method === 'post' ?
-                JSON.stringify(data) : data,
+            data: this.options.contentType === 'application/json' && this.options.method === 'post' ? JSON.stringify(data) : data,
             cache: this.options.cache,
             contentType: this.options.contentType,
             dataType: this.options.dataType,
             success: function (res) {
-                res = calculateObjectValue(that.options, that.options.responseHandler, [res], res);
+                res = calculateObjectValue(
+                    that.options, 
+                    that.options.responseHandler, 
+                    [res], 
+                    res
+                    );
 
                 that.load(res);
+                //alert(res);
                 that.trigger('load-success', res);
             },
             error: function (res) {
+                //alert(that.options.responseHandler);
+                //console.debug(xhr); 
+                //console.debug(error);
+                //alert(this.options.method);
+                //alert('erro:'+res.status);
                 that.trigger('load-error', res.status);
             },
             complete: function () {
+                //alert('complete');
                 if (!silent) {
                     that.$tableLoading.hide();
                 }
@@ -1577,8 +1598,10 @@
         });
 
         if (this.options.ajax) {
+            alert('this.options.ajax');
             calculateObjectValue(this, this.options.ajax, [request], null);
         } else {
+            //alert('ajax');
             $.ajax(request);
         }
     };
@@ -1874,10 +1897,11 @@
         this.initBody(true);
     };
 
+    //deletar varios ....
     BootstrapTable.prototype.remove = function (params) {
-        var len = this.options.data.length,
+        alert(params.field +'--'+params.values +'='+this.options.url);
+        var len = this.options.data.length, //num de registros...data
             i, row;
-
         if (!params.hasOwnProperty('field') || !params.hasOwnProperty('values')) {
             return;
         }
@@ -1951,6 +1975,7 @@
         if (!params.hasOwnProperty('index') || !params.hasOwnProperty('row')) {
             return;
         }
+
         this.data.splice(params.index, 0, params.row);
         this.initSearch();
         this.initPagination();
@@ -1963,6 +1988,7 @@
             return;
         }
         $.extend(this.data[params.index], params.row);
+
         this.initSort();
         this.initBody(true);
     };
@@ -2122,9 +2148,7 @@
         $(this.options.toolbar).insertBefore(this.$el);
         this.$container.next().remove();
         this.$container.remove();
-        this.$el.html(this.$el_.html())
-            .css('margin-top', '0')
-            .attr('class', this.$el_.attr('class') || ''); // reset the class
+        this.$el.html(this.$el_.html()).css('margin-top','0').attr('class', this.$el_.attr('class') || ''); 
     };
 
     BootstrapTable.prototype.showLoading = function () {
@@ -2248,6 +2272,9 @@
         'getScrollPosition',
         'selectPage', 'prevPage', 'nextPage',
         'togglePagination',
+
+        //'onEditableSave',
+
         'toggleView'
     ];
 
@@ -2290,6 +2317,8 @@
     $.fn.bootstrapTable.columnDefaults = BootstrapTable.COLUMN_DEFAULTS;
     $.fn.bootstrapTable.locales = BootstrapTable.LOCALES;
     $.fn.bootstrapTable.methods = allowedMethods;
+
+        //alert($.fn.bootstrapTable.defaults.url);
 
     // BOOTSTRAP TABLE INIT
     // =======================
